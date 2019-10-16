@@ -8,13 +8,16 @@ import java.util.Stack;
 public class Tinhtoan 
 {
 	Stack<Double> sh = new Stack<Double>();
-	Toantu chuoitoantu = new Toantu();
+
 	protected String bieuthuc;
     protected String[] elementMath;		
-    Stack<String[]> st = new Stack<String[]>();
+   
 	protected String[] doi;
 	protected String[] chuoi;
 	
+	Operator toantu = new Operator();
+	Stack<Operator> st = new Stack<Operator>();
+	 
 	public String Xuatkq(String[] doi)
 	{
 		double a,b;
@@ -66,23 +69,26 @@ public class Tinhtoan
     	   }
     	   else if(elementMath[i].charAt(0) == '(')
     	   {
-    		   st.push(chuoitoantu.Chuoi(elementMath[i].charAt(0)));
+    		   toantu.Chuoi(elementMath[i].charAt(0));
+    		   st.push(toantu);
     	   }
     	   else if(elementMath[i].charAt(0) == ')' )
     	   {
-    		   String[] x = st.pop();
-    		   while(x[0].charAt(0) != '(')
+    		   Operator x = st.pop();
+    		   while(x.getkitu() != '(')
     		   {
-        		   chuoipost = chuoipost + " " + x[0];
+        		   chuoipost = chuoipost + " " + x.getkitu();
         		   x = st.pop();
     		   }
     	   }
     	   else if(elementMath[i].charAt(0) == '*' || elementMath[i].charAt(0) == '/')
 		   {
-    		   st.push(chuoitoantu.Chuoi(elementMath[i].charAt(0)));
+    		   toantu.Chuoi(elementMath[i].charAt(0));
+    		   st.push(toantu);
+    		   
 			   if(elementMath[i+1].charAt(0) == '-' || elementMath[i+1].charAt(0) == '+')
 			   {				   
-				   chuoipost = chuoipost + " " +elementMath[i+1];
+				   chuoipost = chuoipost + " " + elementMath[i+1];
 				   i=i+2;
 				   while(i < elementMath.length && !isOperator(elementMath[i]))
                    {
@@ -94,20 +100,21 @@ public class Tinhtoan
 		   }
     	   else 
     	   {
-    		   while(!st.isEmpty() && Integer.parseInt(chuoitoantu.Chuoi(elementMath[i].charAt(0))[1]) <= Integer.parseInt(st.peek()[1]))
+    		   while(!st.isEmpty() && toantu.sosanh(toantu, st.peek()))
     		   {
-        		   chuoipost = chuoipost + " " + st.peek()[0];
+        		   chuoipost = chuoipost + " " + st.peek().getkitu();
         		   st.pop();
     		   }
-    		   st.push(chuoitoantu.Chuoi(elementMath[i].charAt(0)));
+    		   toantu.Chuoi(elementMath[i].charAt(0));
+    		   st.push(toantu);
     	   }
     	   i++;
        }
        
        while(!st.isEmpty())
        {
-    	   String[] toantut = st.peek();
-		   chuoipost = chuoipost + " " + toantut[0];
+    	   Operator toantut = st.peek();
+		   chuoipost = chuoipost + " " + toantut.getkitu();
     	   st.pop();
        }
        chuoipost = chuoipost.trim();
