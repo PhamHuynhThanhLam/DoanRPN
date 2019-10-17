@@ -54,6 +54,7 @@ public class Tinhtoan
 	public LinkedList<String> chuyendoi(LinkedList<String> elementMath)
     {	 
 		 Operator t1 = null;
+		 Character[] t2 = null;
 		 LinkedList<String> chuoipost = new LinkedList<String>();
 		 Stack<Character[]> st1 = new Stack<Character[]>();
 	     for (int i=0; i<elementMath.size() ; i++)
@@ -68,16 +69,19 @@ public class Tinhtoan
 	    		 chuoipost.add(s);
 	    	 }
 	    	 
-	    	 else if(c == '-' && !isOperator(elementMath.get(i+1)))
+	    	 else if(i == 0 && c == '-')
 	    	 {   
-	    		 String s3 = s;
-	    		 while(i + 1 < elementMath.size() && !isOperator(elementMath.get(i+1)))
+	    		 if(!isOperator(elementMath.get(i+1)))
 	    		 {
-	    			 s3 = s3 + elementMath.get(i+1);
-	    			 i++;
+	    			 String s3 = s;
+		    		 while(i + 1 < elementMath.size() && !isOperator(elementMath.get(i+1)))
+		    		 {
+		    			 s3 = s3 + elementMath.get(i+1);
+		    			 i++;
+		    		 }
+		    		 chuoipost.add(s3);
 	    		 }
-	    		 chuoipost.add(s3);
-	    		
+	    			    		
 	    	 }
 	    	 
 	    	 else if(c == '(')
@@ -115,14 +119,20 @@ public class Tinhtoan
 	    	 {
 	    		  if(!st1.empty())
 	    		  {
-	    			  Character[] t2 = st1.peek();
+	    			  t2 = st1.peek();
 	    			  t1 = new Operator(t2[0],(int)t2[1]);
 	    		  }
-	    		  while(!st.isEmpty() && toantu.sosanh(toantu,t1))
+	    		  while(!st1.isEmpty() && toantu.sosanh(toantu,t1))
 	    		  {
 	    			  Character[] tt= st1.peek(); 
 	        		  chuoipost.add(Character.toString(tt[0]));
 	        		  st1.pop();
+	        		  
+	        		  if(!st1.empty())
+		    		  {
+		    			  t2 = st1.peek();
+		    			  t1 = new Operator(t2[0],(int)t2[1]);
+		    		  }
 	    		  }
 	    		  st1.push(toantu.xetdouutien(c));
 	    	 }
