@@ -3,13 +3,15 @@ package DoanRPN;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
 
 public class Programmain
 {		
 	public static void main(String[] args) throws IOException
 	{
-		String bieuthuc, elementMath[] = null;
-		String doi[] = null; 
+		String bieuthuc;
+		LinkedList<String> infix = new LinkedList<String>();
+		LinkedList<String> postfix = new LinkedList<String>();
 		Tinhtoan th = new Tinhtoan(); 
 		
     	do {
@@ -25,16 +27,17 @@ public class Programmain
 			
 		}
              
-        elementMath = th.ChuanHoa(bieuthuc);
-        doi = th.chuyendoi(elementMath);
+        infix = th.ChuanHoa(bieuthuc);      
+        postfix = th.chuyendoi(infix);
+        
         System.out.println("Chuoi infix to postfix");
-    	for(int i=0; i<doi.length ; i++)
+    	for(int i=0; i<postfix.size() ; i++)
     	{    			  
-    	    System.out.print(doi[i]);	
+    	    System.out.print(postfix.get(i));	
     	}
     		
     	System.out.println();    
-        String k = th.Xuatkq(doi);
+        String k = th.Xuatkq(postfix);
         System.out.println("Ket qua phep tinh: " + bieuthuc + " : " + k);  	
     }
 	

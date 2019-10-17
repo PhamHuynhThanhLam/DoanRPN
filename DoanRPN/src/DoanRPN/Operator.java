@@ -3,27 +3,18 @@ package DoanRPN;
 
 public class Operator
 {
-	protected char kitu;
-	protected int douutien;
+	public char kitu;
+	public int douutien;
     
 	public char getkitu()
 	{
 		return kitu;
 	} 
- 
-    public void setkitu(char kitu)
-    {
-    	this.kitu = kitu;
-    } 
+    
     public int getdouutien()
 	{
-		return kitu;
+		return douutien;
 	} 
- 
-    public void setdouutien(int douutien)
-    {
-    	this.douutien = douutien;
-    } 
  
     public Operator()
     {
@@ -39,19 +30,27 @@ public class Operator
     
     public void Chuoi(char elementMath)
 	{
-    	kitu = elementMath;
-		int kt = GetPriority(kitu);
-		douutien = kt;
+    	this.kitu = elementMath;
+		int kt = GetPriority(elementMath);
+		this.douutien = kt;
 	}
+    
+    public Character[] xetdouutien(char elementMath)
+   	{
+    	Character[] arrary = new Character[2];
+   		arrary[0] = elementMath;
+   		int kt = GetPriority(elementMath);
+   		arrary[1] = (char)kt;
+   		return arrary;
+   	}
     
     public boolean sosanh(Operator a, Operator b)     
     {      
-    	double value1 = (double)a.douutien; 
-    	double value2 = (double)b.douutien;   
+    	double value1 = (double)a.getdouutien(); 
+    	double value2 = (double)b.getdouutien();   
     	return value1 <= value2;     
     } 
-    
-        
+          
 	public static int GetPriority(char op)
     {	
         if (op == '+' || op == '-')

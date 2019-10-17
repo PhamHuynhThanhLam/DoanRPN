@@ -2,31 +2,26 @@ package DoanRPN;
 
 import java.util.Arrays;
 import java.util.Stack;
-
-
+import java.util.LinkedList;
 
 public class Tinhtoan 
 {
-	Stack<Double> sh = new Stack<Double>();
-
-	protected String bieuthuc;
-    protected String[] elementMath;		
-   
-	protected String[] doi;
-	protected String[] chuoi;
-	
-	Operator toantu = new Operator();
+	protected String bieuthuc;  
+	Stack<Double> sh = new Stack<Double>();			
 	Stack<Operator> st = new Stack<Operator>();
-	 
-	public String Xuatkq(String[] doi)
+	Operator toantu = new Operator();
+	
+	public String Xuatkq(LinkedList<String> doi)
 	{
 		double a,b;
 		double kq = 0;
-		for(int i=0; i< doi.length; i++)
+		for(int i=0; i< doi.size(); i++)
 		{
-			if(!isOperator(doi[i]))
+			String s ="";
+	       	s+= doi.get(i);
+			if(!isOperator(s))
 			{
-				kq = Double.parseDouble(doi[i]);
+				kq = Double.parseDouble(s);
 				sh.push(kq);
 			}
 			else {
@@ -37,7 +32,7 @@ public class Tinhtoan
 				}catch (Exception e) {
 					return "NULL";
 				}
-				switch (doi[i])
+				switch (s)
 				{
 				    case "+": kq = (b + a); break;
 				    case "-": kq = (b - a); break;
@@ -56,74 +51,94 @@ public class Tinhtoan
 	}
     
     
-	public String[] chuyendoi(String[] elementMath)
-    {
-	 
-       String chuoipost = "";
-       int i=0;
-       while( i< elementMath.length)
-       {
-    	   if(!isOperator(elementMath[i]))
-    	   {
-    		   chuoipost = chuoipost + " " + elementMath[i];
-    	   }
-    	   else if(elementMath[i].charAt(0) == '(')
-    	   {
-    		   toantu.Chuoi(elementMath[i].charAt(0));
-    		   st.push(toantu);
-    	   }
-    	   else if(elementMath[i].charAt(0) == ')' )
-    	   {
-    		   Operator x = st.pop();
-    		   while(x.getkitu() != '(')
-    		   {
-        		   chuoipost = chuoipost + " " + x.getkitu();
-        		   x = st.pop();
-    		   }
-    	   }
-    	   else if(elementMath[i].charAt(0) == '*' || elementMath[i].charAt(0) == '/')
-		   {
-    		   toantu.Chuoi(elementMath[i].charAt(0));
-    		   st.push(toantu);
-    		   
-			   if(elementMath[i+1].charAt(0) == '-' || elementMath[i+1].charAt(0) == '+')
-			   {				   
-				   chuoipost = chuoipost + " " + elementMath[i+1];
-				   i=i+2;
-				   while(i < elementMath.length && !isOperator(elementMath[i]))
-                   {
-					   chuoipost = chuoipost + elementMath[i];
-					   i++;
-		     	   }
-			   }
-			
-		   }
-    	   else 
-    	   {
-    		   while(!st.isEmpty() && toantu.sosanh(toantu, st.peek()))
-    		   {
-        		   chuoipost = chuoipost + " " + st.peek().getkitu();
-        		   st.pop();
-    		   }
-    		   toantu.Chuoi(elementMath[i].charAt(0));
-    		   st.push(toantu);
-    	   }
-    	   i++;
-       }
-       
-       while(!st.isEmpty())
-       {
-    	   Operator toantut = st.peek();
-		   chuoipost = chuoipost + " " + toantut.getkitu();
-    	   st.pop();
-       }
-       chuoipost = chuoipost.trim();
-       doi = chuoipost.split(" ");
-       return doi;
+	public LinkedList<String> chuyendoi(LinkedList<String> elementMath)
+    {	 
+		 Operator t1 = null;
+		 LinkedList<String> chuoipost = new LinkedList<String>();
+		 Stack<Character[]> st1 = new Stack<Character[]>();
+	     for (int i=0; i<elementMath.size() ; i++)
+	     {
+	    	 String s ="";
+	         s+= elementMath.get(i);
+	         char c = s.charAt(0);
+	         toantu.Chuoi(c);
+	         
+	    	 if(!isOperator(s))
+	    	 {
+	    		 chuoipost.add(s);
+	    	 }
+	    	 
+	    	 else if(c == '-' && !isOperator(elementMath.get(i+1)))
+	    	 {   
+	    		 String s3 = s;
+	    		 while(i + 1 < elementMath.size() && !isOperator(elementMath.get(i+1)))
+	    		 {
+	    			 s3 = s3 + elementMath.get(i+1);
+	    			 i++;
+	    		 }
+	    		 chuoipost.add(s3);
+	    		
+	    	 }
+	    	 
+	    	 else if(c == '(')
+	    	 {
+	    		 st1.push(toantu.xetdouutien(c));
+	    	 }
+	    	 else if(c == ')')
+	    	 {
+	    		 Character[] x = st1.pop();
+	    		 while(x[0] != '(')
+	    		 {
+	        	    chuoipost.add(Character.toString(x[0]));
+	        	    x = st1.pop();
+	    		 }
+	    	 }
+	    	  
+	    	 else if(c == '*' || c == '/')
+			 {
+	    		 st1.push(toantu.xetdouutien(c));    		   
+				 if(elementMath.get(i+1).charAt(0) == '-' || elementMath.get(i+1).charAt(0) == '+')
+				 {				   
+					 String s1 ="",s2="";
+			         s1+= elementMath.get(i+1);
+			         s2+=elementMath.get(i+2);
+					 while(i < elementMath.size() && isOperator(elementMath.get(i)))
+	                 {						 
+						 chuoipost.add(s1+s2);
+						 i=i+2;
+			     	 }
+				  }
+				
+			 }
+	    	 
+	    	 else 
+	    	 {
+	    		  if(!st1.empty())
+	    		  {
+	    			  Character[] t2 = st1.peek();
+	    			  t1 = new Operator(t2[0],(int)t2[1]);
+	    		  }
+	    		  while(!st.isEmpty() && toantu.sosanh(toantu,t1))
+	    		  {
+	    			  Character[] tt= st1.peek(); 
+	        		  chuoipost.add(Character.toString(tt[0]));
+	        		  st1.pop();
+	    		  }
+	    		  st1.push(toantu.xetdouutien(c));
+	    	 }
+	      }
+	      
+	      while(!st1.isEmpty())
+	      {
+	    	  Character[] toa = st1.peek();
+	    	  chuoipost.add(Character.toString(toa[0]));
+	    	  st1.pop();
+	      }
+	     
+	      return chuoipost;
     }
-
 	
-	public boolean isOperator(String c)
+	public static boolean isOperator(String c)
 	{  
         String operator[] = { "+", "-", "*", "/", ")", "(" };
         Arrays.sort(operator);
@@ -132,38 +147,28 @@ public class Tinhtoan
         else return false;
     }
 	
-	public String[] ChuanHoa(String bieuthuc)
+	public LinkedList<String> ChuanHoa(String bieuthuc)
 	{ 
-		String s1 = "", elementMath[] = null;
+		LinkedList<String> infix = new LinkedList<String>();
+        String s1 = "", elementMath[] = null;
         bieuthuc = bieuthuc.trim();
         bieuthuc = bieuthuc.replaceAll("\\s+"," ");
-        
         for (int i=0; i<bieuthuc.length(); i++)
         {
-        	char c = bieuthuc.charAt(i);
+            char c = bieuthuc.charAt(i);
             String d = Character.toString(c);
-            
             if (!isOperator(d))
                 s1 = s1 + d;
-            else if (i==0 && c == '-')
-            {
-            	s1 = s1 + c;
-            	i++;
-            	while(!isOperator(Character.toString(bieuthuc.charAt(i))))
-            	{
-            		s1 = s1 + bieuthuc.charAt(i);
-            		i++;
-            	}
-            	i--;
-            	s1 = s1 + " ";
-            }
             else s1 = s1 + " " + d + " ";
-			
         }
         s1 = s1.trim();
         s1 = s1.replaceAll("\\s+"," "); 
         elementMath = s1.split(" "); 
-        return elementMath;
+        for(int i=0;i<elementMath.length;i++)
+        {
+        	infix.add(elementMath[i]);
+        }
+        return infix;
     }
 	
 	
