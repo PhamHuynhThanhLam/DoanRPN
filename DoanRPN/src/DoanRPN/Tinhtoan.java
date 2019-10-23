@@ -62,6 +62,7 @@ public class Tinhtoan
 	    	 String s ="";
 	         s+= elementMath.get(i);
 	         char c = s.charAt(0);
+	         
 	         toantu.Chuoi(c);
 	         
 	    	 if(!isOperator(s))
@@ -150,7 +151,7 @@ public class Tinhtoan
 	
 	public static boolean isOperator(String c)
 	{  
-        String operator[] = { "+", "-", "*", "/", ")", "(" };
+        String operator[] = { "+", "-", "*", "/", ")", "(" ,"sin","cos","tan","cotg","^"};
         Arrays.sort(operator);
         if (Arrays.binarySearch(operator, c) > -1)
             return true;
@@ -167,8 +168,20 @@ public class Tinhtoan
         {
             char c = bieuthuc.charAt(i);
             String d = Character.toString(c);
-            if (!isOperator(d))
-                s1 = s1 + d;
+  
+            if(!isOperator(d))
+            {
+            	s1 = s1 + d; 
+            }
+            else if (c >= 'a' && c <= 'z')
+            {
+                int j = i;
+                while (c >= 'a' && c <= 'z')
+                    i++;
+                d = bieuthuc.substring(j, i - j);
+                s1 = s1 + d + " ";
+            }
+           
             else s1 = s1 + " " + d + " ";
         }
         s1 = s1.trim();
