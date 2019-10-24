@@ -8,7 +8,6 @@ public class Tinhtoan
 {
 	protected String bieuthuc;  
 	Stack<Double> sh = new Stack<Double>();			
-	Stack<Operator> st = new Stack<Operator>();
 	Operator toantu = new Operator();
 	
 	public String Xuatkq(LinkedList<String> doi)
@@ -25,52 +24,80 @@ public class Tinhtoan
 				sh.push(kq);
 			}
 			else {
-				try {
-					a = sh.pop();
-					b = sh.pop();
-				
-				}catch (Exception e) {
-					return "NULL";
-				}
-				switch (s)
+				a = sh.pop();
+				if (s.equals("+")|| s.equals("-") || s.equals("*") || s.equals("/") || s.equals("%") || s.equals("^"))
 				{
-				    case "+": kq = (b + a); break;
-				    case "-": kq = (b - a); break;
-				    case "*": kq = (b * a); break;
-				    case "/": 
-				    	if(a==0)
-				        {
-				    		System.out.println("Khong the chia 0");
-				    	}
-				    	kq = (b / a); break;
+					b = sh.pop();
+					switch (s)
+					{
+					    case "+": kq = (b + a); break;
+					    case "-": kq = (b - a); break;
+					    case "*": kq = (b * a); break;
+					    case "/": 
+					    	if(a==0)
+					        {
+					    		System.out.println("Khong the chia 0");
+					    	}
+					    	kq = (b / a); break;
+					    case "^":
+                            kq = Math.pow(b, a);
+                            break;
+					}
+					sh.push(kq);
 				}
-				sh.push(kq);
+				else if (s.equals("sin") || s.equals("cos") || s.equals("tan") || s.equals("cotg") || s.equals("ln") || s.equals("log") || s.equals("sqrt"))
+				{
+					 double c = Math.toRadians(a);
+					 switch (s)
+                     {
+                         case "sin":
+                             sh.push(Math.sin(c));
+                             break;
+                         case "cos":
+                             sh.push(Math.cos(c));
+                             break;
+                         case "tan":
+                             sh.push(Math.tan(c));
+                             break;
+                         case "cotg":
+                             sh.push(1.00/Math.tan(c));
+                             break;
+                         case "ln":
+                             sh.push(Math.log(a));
+                             break;
+                         case "log":
+                             sh.push(Math.log10(a));
+                             break;
+                         case "sqrt":
+                             sh.push(Math.sqrt(a));
+                             break;
+                     }
+				}		
 			}
 		}
 		return String.valueOf(sh.pop());
 	}
     
-    
+   
 	public LinkedList<String> chuyendoi(LinkedList<String> elementMath)
     {	 
 		 Operator t1 = null;
-		 Character[] t2 = null;
+		 String[] t2 = null;
 		 LinkedList<String> chuoipost = new LinkedList<String>();
-		 Stack<Character[]> st1 = new Stack<Character[]>();
+		 Stack<String[]> st1 = new Stack<String[]>();
 	     for (int i=0; i<elementMath.size() ; i++)
 	     {
 	    	 String s ="";
 	         s+= elementMath.get(i);
-	         char c = s.charAt(0);
 	         
-	         toantu.Chuoi(c);
+	         toantu.Chuoi(s);
 	         
 	    	 if(!isOperator(s))
 	    	 {
 	    		 chuoipost.add(s);
 	    	 }
 	    	 
-	    	 else if(i == 0 && c == '-')
+	    	 else if(i == 0 && s.equals("-"))
 	    	 {   
 	    		 if(!isOperator(elementMath.get(i+1)))
 	    		 {
@@ -85,23 +112,23 @@ public class Tinhtoan
 	    			    		
 	    	 }
 	    	 
-	    	 else if(c == '(')
+	    	 else if(s.equals("("))
 	    	 {
-	    		 st1.push(toantu.xetdouutien(c));
+	    		 st1.push(toantu.xetdouutien(s));
 	    	 }
-	    	 else if(c == ')')
+	    	 else if(s.equals(")"))
 	    	 {
-	    		 Character[] x = st1.pop();
-	    		 while(x[0] != '(')
+	    		 String[] x = st1.pop();
+	    		 while(x[0].equals("(") == false)
 	    		 {
-	        	    chuoipost.add(Character.toString(x[0]));
+	        	    chuoipost.add(x[0]);
 	        	    x = st1.pop();
 	    		 }
 	    	 }
 	    	  
-	    	 else if(c == '*' || c == '/')
+	    	 else if(s.equals("*") || s.equals("/"))
 			 {
-	    		 st1.push(toantu.xetdouutien(c));    		   
+	    		 st1.push(toantu.xetdouutien(s));    		   
 				 if(elementMath.get(i+1).charAt(0) == '-' || elementMath.get(i+1).charAt(0) == '+')
 				 {				   
 					 String s1 ="",s2="";
@@ -121,28 +148,29 @@ public class Tinhtoan
 	    		  if(!st1.empty())
 	    		  {
 	    			  t2 = st1.peek();
-	    			  t1 = new Operator(t2[0],(int)t2[1]);
+	    			  t1 = new Operator(t2[0],Integer.valueOf(t2[1]));
 	    		  }
 	    		  while(!st1.isEmpty() && toantu.sosanh(toantu,t1))
 	    		  {
-	    			  Character[] tt= st1.peek(); 
-	        		  chuoipost.add(Character.toString(tt[0]));
+	    			  String[] tt= st1.peek(); 
+	        		  chuoipost.add(tt[0]);
 	        		  st1.pop();
 	        		  
 	        		  if(!st1.empty())
 		    		  {
 		    			  t2 = st1.peek();
-		    			  t1 = new Operator(t2[0],(int)t2[1]);
+		    			  t1 = new Operator(t2[0],Integer.valueOf(t2[1]));
+
 		    		  }
 	    		  }
-	    		  st1.push(toantu.xetdouutien(c));
+	    		  st1.push(toantu.xetdouutien(s));
 	    	 }
 	      }
 	      
 	      while(!st1.isEmpty())
 	      {
-	    	  Character[] toa = st1.peek();
-	    	  chuoipost.add(Character.toString(toa[0]));
+	    	  String[] toa = st1.peek();
+	    	  chuoipost.add(toa[0]);
 	    	  st1.pop();
 	      }
 	     
@@ -151,7 +179,7 @@ public class Tinhtoan
 	
 	public static boolean isOperator(String c)
 	{  
-        String operator[] = { "+", "-", "*", "/", ")", "(" ,"sin","cos","tan","cotg","^"};
+        String operator[] = { "+", "-", "*", "/", ")", "(" ,"sin","cos","tan","cotg","^","log","ln","sqrt"};
         Arrays.sort(operator);
         if (Arrays.binarySearch(operator, c) > -1)
             return true;
@@ -168,18 +196,19 @@ public class Tinhtoan
         {
             char c = bieuthuc.charAt(i);
             String d = Character.toString(c);
-  
+          
             if(!isOperator(d))
             {
             	s1 = s1 + d; 
-            }
+            }      
             else if (c >= 'a' && c <= 'z')
             {
                 int j = i;
-                while (c >= 'a' && c <= 'z')
+                while (bieuthuc.charAt(i) >= 'a' && bieuthuc.charAt(i) <= 'z')
                     i++;
                 d = bieuthuc.substring(j, i - j);
                 s1 = s1 + d + " ";
+                i--;
             }
            
             else s1 = s1 + " " + d + " ";

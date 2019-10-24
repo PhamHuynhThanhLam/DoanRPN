@@ -1,12 +1,11 @@
 package DoanRPN;
 
-
-public class Operator
+public class Operator 
 {
-	public char kitu;
+	public String kitu;
 	public int douutien;
     
-	public char getkitu()
+	public String getkitu()
 	{
 		return kitu;
 	} 
@@ -21,26 +20,26 @@ public class Operator
     	
     }
     
-    public Operator(char kitu, int douutien)
+    public Operator(String kitu, int douutien)
     {
     	super();
     	this.kitu = kitu;
     	this.douutien = douutien;
     } 
     
-    public void Chuoi(char elementMath)
+    public void Chuoi(String elementMath)
 	{
     	this.kitu = elementMath;
 		int kt = GetPriority(elementMath);
 		this.douutien = kt;
 	}
     
-    public Character[] xetdouutien(char elementMath)
+    public String[] xetdouutien(String elementMath)
    	{
-    	Character[] arrary = new Character[2];
+    	String[] arrary = new String[2];
    		arrary[0] = elementMath;
    		int kt = GetPriority(elementMath);
-   		arrary[1] = (char)kt;
+   		arrary[1] = String.valueOf(kt);
    		return arrary;
    	}
     
@@ -51,12 +50,15 @@ public class Operator
     	return value1 <= value2;     
     } 
           
-	public static int GetPriority(char op)
-    {	
-        if (op == '+' || op == '-')
-            return 1;
-        else if (op == '*' || op == '/')
+    public static int GetPriority(String op)
+    {
+        if (op.equals("sin") || op.equals("cos") || op.equals("tan") || op.equals("cotg") || op.equals("ln") || op.equals("log") || op.equals("sqrt"))
+            return 3;
+        if (op.equals("*") || op.equals("/") || op.equals("%") || op.equals("^"))
             return 2;
-        else return 0;
+        if (op.equals("+") ||op.equals ("-"))
+            return 1;
+        return 0;
     }
+
 }

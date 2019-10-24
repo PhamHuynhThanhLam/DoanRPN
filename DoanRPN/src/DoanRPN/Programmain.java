@@ -20,32 +20,30 @@ public class Programmain
         	BufferedReader br=new BufferedReader(ips);
         	bieuthuc = br.readLine();   		
     	}while(bieuthuc.length() == 0);
-    	
+       
+        
         try {
             bieuthuc = th.Chuanam(bieuthuc);
 		} catch (Exception e) {
 			
 		}
-             
-        infix = th.ChuanHoa(bieuthuc);      
-        postfix = th.chuyendoi(infix);
-        System.out.println(infix);
-        System.out.println(postfix);
+        
+        infix = th.ChuanHoa(bieuthuc); 
+        postfix = th.chuyendoi(infix);   
+
         System.out.println("Chuoi infix to postfix");
-    	for(int i=0; i<postfix.size() ; i++)
-    	{    			  
-    	    System.out.print(postfix.get(i));	
-    	}
-    	try 
-    	{
-    		System.out.println();    
-            String k = th.Xuatkq(postfix);
+      			  
+    	System.out.print(postfix);	
+    	
+        try {
+        	System.out.println();   
+        	String k = th.Xuatkq(postfix);
             System.out.println("Ket qua phep tinh: " + bieuthuc + " : " + k); 
-    	}
-    	catch (Exception e)
-    	{
-    		 System.out.println("Ket qua phep tinh: " + bieuthuc + " : " + "NULL"); 
+		} catch (Exception e)
+        {
+   		    System.out.println("Ket qua phep tinh: " + bieuthuc + " : " + "NULL"); 
 		}
+       
     }
 	
 }
