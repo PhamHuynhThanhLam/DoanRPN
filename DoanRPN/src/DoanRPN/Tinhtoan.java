@@ -25,7 +25,7 @@ public class Tinhtoan
 			}
 			else {
 				a = sh.pop();
-				if (s.equals("+")|| s.equals("-") || s.equals("*") || s.equals("/") || s.equals("%") || s.equals("^"))
+				if (s.equals("+")|| s.equals("-") || s.equals("*") || s.equals("/") || s.equals("^"))
 				{
 					b = sh.pop();
 					switch (s)

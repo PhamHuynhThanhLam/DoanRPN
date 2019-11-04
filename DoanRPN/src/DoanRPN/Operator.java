@@ -54,7 +54,7 @@ public class Operator
     {
         if (op.equals("sin") || op.equals("cos") || op.equals("tan") || op.equals("cotg") || op.equals("ln") || op.equals("log") || op.equals("sqrt"))
             return 3;
-        if (op.equals("*") || op.equals("/") || op.equals("%") || op.equals("^"))
+        if (op.equals("*") || op.equals("/") || op.equals("^"))
             return 2;
         if (op.equals("+") ||op.equals ("-"))
             return 1;
