@@ -112,6 +112,21 @@ public class Tinhtoan
 	    			    		
 	    	 }
 	    	 
+	    	 else if(i == 0 && s.equals("+"))
+	    	 {   
+	    		 if(!isOperator(elementMath.get(i+1)))
+	    		 {
+	    			 String s3 = s;
+		    		 while(i + 1 < elementMath.size() && !isOperator(elementMath.get(i+1)))
+		    		 {
+		    			 s3 = s3 + elementMath.get(i+1);
+		    			 i++;
+		    		 }
+		    		 chuoipost.add(s3);
+	    		 }
+	    			    		
+	    	 }
+	    	 
 	    	 else if(s.equals("("))
 	    	 {
 	    		 st1.push(toantu.xetdouutien(s));
@@ -189,7 +204,6 @@ public class Tinhtoan
 	public LinkedList<String> ChuanHoa(String bieuthuc)
 	{ 
 		LinkedList<String> infix = new LinkedList<String>();
-        String s1 = "", elementMath[] = null;
         bieuthuc = bieuthuc.trim();
         bieuthuc = bieuthuc.replaceAll("\\s+"," ");
         for (int i=0; i<bieuthuc.length(); i++)
@@ -197,29 +211,26 @@ public class Tinhtoan
             char c = bieuthuc.charAt(i);
             String d = Character.toString(c);
           
+            
             if(!isOperator(d))
             {
-            	s1 = s1 + d; 
-            }      
-            else if (c >= 'a' && c <= 'z')
-            {
-                int j = i;
-                while (bieuthuc.charAt(i) >= 'a' && bieuthuc.charAt(i) <= 'z')
-                    i++;
-                d = bieuthuc.substring(j, i - j);
-                s1 = s1 + d + " ";
+            	int j = i;
+                while ((bieuthuc.charAt(i) >= '0' && bieuthuc.charAt(i) <= '9') || (bieuthuc.charAt(i) >= 'a' && bieuthuc.charAt(i) <= 'z'))
+                {
+                	i++;
+                	if(bieuthuc.length() <= i)
+                	{
+                		break;
+                	}
+                }
+                    
+                d = bieuthuc.substring(j, i);
                 i--;
-            }
-           
-            else s1 = s1 + " " + d + " ";
-        }
-        s1 = s1.trim();
-        s1 = s1.replaceAll("\\s+"," "); 
-        elementMath = s1.split(" "); 
-        for(int i=0;i<elementMath.length;i++)
-        {
-        	infix.add(elementMath[i]);
-        }
+                infix.add(d);
+            }      
+            else  infix.add(d);
+
+        }    
         return infix;
     }
 	
@@ -230,6 +241,7 @@ public class Tinhtoan
         bieuthuc = bieuthuc.trim();
         bieuthuc = bieuthuc.replaceAll("\\s+"," ");
         int j=0;
+        
         for(int i=0;i<bieuthuc.length();i++)
         {
         	if (bieuthuc.charAt(i) == '-' && bieuthuc.charAt(i+1) == '-' || bieuthuc.charAt(i) == '-' && bieuthuc.charAt(i+1) == '+' || bieuthuc.charAt(i) == '+' && bieuthuc.charAt(i+1) == '+'|| bieuthuc.charAt(i) == '+' && bieuthuc.charAt(i+1) == '-')
@@ -261,6 +273,9 @@ public class Tinhtoan
             	s1 = s1 + bieuthuc.charAt(i);
             }
         }
+        
+        s1 = s1.replaceAll(" ","");
+        
         return s1;
     }
 
