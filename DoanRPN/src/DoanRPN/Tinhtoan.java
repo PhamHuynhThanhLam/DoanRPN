@@ -9,6 +9,8 @@ public class Tinhtoan
 	protected String bieuthuc;  
 	Stack<Double> sh = new Stack<Double>();			
 	Operator toantu = new Operator();
+	protected LinkedList<String> Statusstack = new LinkedList<String>();
+	protected LinkedList<String> StatusPostfix = new LinkedList<String>();
 	
 	public String Xuatkq(LinkedList<String> doi)
 	{
@@ -85,6 +87,8 @@ public class Tinhtoan
 		 String[] t2 = null;
 		 LinkedList<String> chuoipost = new LinkedList<String>();
 		 Stack<String[]> st1 = new Stack<String[]>();
+		 String sts = "";
+		 String stp = "";
 	     for (int i=0; i<elementMath.size() ; i++)
 	     {
 	    	 String s ="";
@@ -95,6 +99,16 @@ public class Tinhtoan
 	    	 if(!isOperator(s))
 	    	 {
 	    		 chuoipost.add(s);
+	    		 if(st1.isEmpty())
+	    		 {
+	    			 sts = "EMPTY";
+	    			 stp = stp + s;
+	    		 }
+	    		 else {
+	    			 stp = stp + s;
+				 }
+	    		 Statusstack.add(sts);
+	    	
 	    	 }
 	    	 
 	    	 else if(i == 0 && s.equals("-"))
@@ -108,6 +122,9 @@ public class Tinhtoan
 		    			 i++;
 		    		 }
 		    		 chuoipost.add(s3);
+		    		 sts = "EMPTY";
+		    		 Statusstack.add(sts);
+		    		 stp = s3;
 	    		 }
 	    			    		
 	    	 }
@@ -123,6 +140,7 @@ public class Tinhtoan
 		    			 i++;
 		    		 }
 		    		 chuoipost.add(s3);
+		    		 stp = s3;
 	    		 }
 	    			    		
 	    	 }
@@ -130,20 +148,38 @@ public class Tinhtoan
 	    	 else if(s.equals("("))
 	    	 {
 	    		 st1.push(toantu.xetdouutien(s));
+	    	     sts = sts + s;
+	    	     Statusstack.add(sts); 
 	    	 }
 	    	 else if(s.equals(")"))
 	    	 {
 	    		 String[] x = st1.pop();
+	    		 int dodai = sts.length();
 	    		 while(x[0].equals("(") == false)
 	    		 {
 	        	    chuoipost.add(x[0]);
+	        	    stp = stp + x[0];
 	        	    x = st1.pop();
+	        	    dodai--;
 	    		 }
+	    		 sts = sts.substring(0,dodai-1);
+	    		 Statusstack.add(sts); 
 	    	 }
 	    	  
-	    	 else if(s.equals("*") || s.equals("/"))
+	    	 else if((s.equals("*") && (elementMath.get(i+1).charAt(0) == '-' || elementMath.get(i+1).charAt(0) == '+')) || (s.equals("/") && (elementMath.get(i+1).charAt(0) == '-' || elementMath.get(i+1).charAt(0) == '+')))
 			 {
-	    		 st1.push(toantu.xetdouutien(s));    		   
+	    		 st1.push(toantu.xetdouutien(s)); 
+	    		 if(sts.equals("EMPTY"))
+   		         {
+   		    	      sts = s;
+   		         }
+   		         else {
+   		    	      sts = sts + s;
+			     }
+	    		  
+	    		 Statusstack.add(sts);
+	    		 StatusPostfix.add(stp); 
+	    		 
 				 if(elementMath.get(i+1).charAt(0) == '-' || elementMath.get(i+1).charAt(0) == '+')
 				 {				   
 					 String s1 ="",s2="";
@@ -152,14 +188,18 @@ public class Tinhtoan
 					 while(i < elementMath.size() && isOperator(elementMath.get(i)))
 	                 {						 
 						 chuoipost.add(s1+s2);
+						
 						 i=i+2;
 			     	 }
+					 Statusstack.add(sts);
+					 stp = stp+s1+s2;
 				  }
 				
 			 }
 	    	 
 	    	 else 
 	    	 {
+	    		 
 	    		  if(!st1.empty())
 	    		  {
 	    			  t2 = st1.peek();
@@ -171,6 +211,18 @@ public class Tinhtoan
 	        		  chuoipost.add(tt[0]);
 	        		  st1.pop();
 	        		  
+	        		  stp = stp + tt[0];
+	        		  if(sts.equals("sin") || sts.equals("cos") || sts.equals("tan") || sts.equals("cotg") || sts.equals("ln") || sts.equals("log") || sts.equals("sqrt"))
+	        		  {
+	        			  sts = "";
+	        		  }
+	        		  else if(tt[0].equals("sin") || tt[0].equals("cos") || tt[0].equals("tan") || tt[0].equals("cotg") || tt[0].equals("ln") || tt[0].equals("log") || tt[0].equals("sqrt"))
+	        		  {
+	        			  sts = sts.substring(0, 1);
+	        		  }
+	        		  else {
+		        		  sts = sts.substring(0, sts.length() - 1);
+					  }
 	        		  if(!st1.empty())
 		    		  {
 		    			  t2 = st1.peek();
@@ -179,15 +231,27 @@ public class Tinhtoan
 		    		  }
 	    		  }
 	    		  st1.push(toantu.xetdouutien(s));
-	    	 }
+    		      if(sts.equals("EMPTY"))
+    		      {
+    		    	  sts = s;
+    		      }
+    		      else {
+    		    	  sts = sts + s;
+			      }
+	    		  
+	    		  Statusstack.add(sts);
+	    	  }
+	    	  StatusPostfix.add(stp); 
 	      }
 	      
 	      while(!st1.isEmpty())
 	      {
 	    	  String[] toa = st1.peek();
+	    	  stp = stp + toa[0];    	 
 	    	  chuoipost.add(toa[0]);
 	    	  st1.pop();
 	      }
+	      StatusPostfix.add(stp);
 	     
 	      return chuoipost;
     }
@@ -215,7 +279,7 @@ public class Tinhtoan
             if(!isOperator(d))
             {
             	int j = i;
-                while ((bieuthuc.charAt(i) >= '0' && bieuthuc.charAt(i) <= '9') || (bieuthuc.charAt(i) >= 'a' && bieuthuc.charAt(i) <= 'z'))
+                while ((bieuthuc.charAt(i) >= '0' && bieuthuc.charAt(i) <= '9') || (bieuthuc.charAt(i) >= 'a' && bieuthuc.charAt(i) <= 'z') || bieuthuc.charAt(i) == '.' ||(bieuthuc.charAt(i) >= 'A' && bieuthuc.charAt(i) <= 'Z') || bieuthuc.charAt(i) == '=')
                 {
                 	i++;
                 	if(bieuthuc.length() <= i)
@@ -223,10 +287,11 @@ public class Tinhtoan
                 		break;
                 	}
                 }
-                    
+      
                 d = bieuthuc.substring(j, i);
+                infix.add(d);   
                 i--;
-                infix.add(d);
+               
             }      
             else  infix.add(d);
 
